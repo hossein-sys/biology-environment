@@ -10,11 +10,9 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
-  Sliders,
   Sparkles,
   MapPin,
-  Calendar,
-  Layers,
+  TrendingUp,
   ShieldCheck,
   Send,
 } from 'lucide-react';
@@ -35,18 +33,20 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
   onRefreshData,
   onOpenCertificateModal,
 }) => {
-  // Review Queue state
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
   const [inspectorNotes, setInspectorNotes] = useState<{ [key: string]: string }>({});
 
   // Calculator State
-  const [selectedCalcCompanyId, setSelectedCalcCompanyId] = useState<string>(companies[0]?._id || '');
+  const [selectedCalcCompanyId, setSelectedCalcCompanyId] = useState<string>(
+    companies[0]?._id || ''
+  );
   const [baseComplianceScore, setBaseComplianceScore] = useState<number>(28); // max 30
-  const [pollutantReductionScore, setPollutantReductionScore] = useState<number>(27); // max 30
+  const [pollutantReductionScore, setPollutantReductionScore] = useState<number>(28); // max 30
   const [csrAndEducationScore, setCsrAndEducationScore] = useState<number>(18); // max 20
-  const [proactiveAuditScore, setProactiveAuditScore] = useState<number>(19); // max 20
+  const [proactiveAuditScore, setProactiveAuditScore] = useState<number>(18); // max 20
 
-  const selectedCompany = companies.find((c) => c._id === selectedCalcCompanyId) || companies[0];
+  const selectedCompany =
+    companies.find((c) => c._id === selectedCalcCompanyId) || companies[0];
 
   const totalCalculatedScore = Math.min(
     100,
@@ -64,26 +64,54 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
 
   const tierTitleFa =
     calculatedTier === 'platinum'
-      ? 'صنعت سبز برتر (رتبه پلاتین - ۱۰۰٪ معافیت ماده ۲۷)'
+      ? 'صنعت سبز برتر - رتبه پلاتین (۱۰۰٪ معافیت ماده ۲۷)'
       : calculatedTier === 'gold'
-      ? 'صنعت سبز همیار (رتبه طلا - ۵۰٪ تخفیف ماده ۲۷)'
+      ? 'صنعت سبز همیار - رتبه طلا (۵۰٪ تخفیف ماده ۲۷)'
       : calculatedTier === 'silver'
-      ? 'واحد در حال ارتقا (رتبه نقره - فاقد معافیت)'
+      ? 'واحد در حال ارتقا - رتبه نقره (فاقد معافیت)'
       : 'واحد آلاینده مشمول جریمه (رتبه قرمز)';
 
-  const handleAction = (
-    logId: string,
-    action: 'approved' | 'rejected' | 'revision_required'
-  ) => {
-    const notes = inspectorNotes[logId] || (action === 'approved' ? 'گزارش و مستندات میدانی مورد تایید ممیز قرار گرفت.' : 'نیازمند تکمیل مدارک');
+  const handleApproveAndScore = (log: ActivityLog) => {
+    const notes = inspectorNotes[log._id] || 'مستندات آزمایشگاه معتمد و اقدامات میدانی تایید گردید و امتیاز به شرکت افزوده شد.';
+    storageService.updateLogStatus(log._id, 'approved', notes);
+
+    // Boost company score in real-time
+    const targetComp = companies.find((c) => c._id === log.companyId._id);
+    if (targetComp) {
+      const newScore = Math.min(100, targetComp.currentScore + 6);
+      const newTier = newScore >= 85 ? 'platinum' : newScore >= 70 ? 'gold' : 'silver';
+      storageService.saveCompany({
+        ...targetComp,
+        currentScore: newScore,
+        currentTier: newTier,
+      });
+
+      // If unlocked tier, issue voucher
+      if (newScore >= 70 && targetComp.currentScore < 70) {
+        storageService.issueCertificateAndVoucher(targetComp, newScore, newTier as any);
+      }
+    }
+
+    confetti({
+      particleCount: 60,
+      spread: 60,
+      origin: { y: 0.6 },
+      colors: ['#10b981', '#34d399', '#059669'],
+    });
+
+    onRefreshData();
+  };
+
+  const handleRejectOrRevise = (logId: string, action: 'rejected' | 'revision_required') => {
+    const notes = inspectorNotes[logId] || (action === 'rejected' ? 'گزارش به علت عدم انطباق آزمایشگاهی رد شد.' : 'نیازمند تکمیل مدارک و آزمایش مجدد');
     storageService.updateLogStatus(logId, action, notes);
     onRefreshData();
   };
 
-  const handleIssueVoucher = () => {
+  const handleManualIssueVoucher = () => {
     if (!selectedCompany) return;
     if (totalCalculatedScore < 70) {
-      alert('امتیاز شرکت باید حداقل ۷۰ باشد تا مجوز تخفیف و گواهی صنعت سبز صادر گردد.');
+      alert('امتیاز باید حداقل ۷۰ باشد تا مجوز تخفیف و گواهی صنعت سبز صادر گردد.');
       return;
     }
 
@@ -95,10 +123,10 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
     );
 
     confetti({
-      particleCount: 100,
-      spread: 80,
+      particleCount: 80,
+      spread: 70,
       origin: { y: 0.6 },
-      colors: ['#10b981', '#34d399', '#f59e0b', '#06b6d4'],
+      colors: ['#10b981', '#34d399', '#f59e0b'],
     });
 
     onRefreshData();
@@ -107,34 +135,34 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Admin Title Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-teal-950 via-slate-900 to-slate-950 p-6 sm:p-8 border border-teal-500/30 shadow-2xl">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Header Banner */}
+      <div className="rounded-3xl bg-white border border-teal-100 p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/30">
-                کارتابل نظارتی رسمی
+              <span className="px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold border border-teal-200">
+                کارتابل نظارتی رسمی بازرسان
               </span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-500">
                 اداره کل حفاظت محیط‌زیست استان زنجان
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white">
-              کارتابل ممیزی بازرسان و سامانه ارزیابی صنعت سبز
-            </h2>
-            <p className="text-xs text-slate-300 max-w-2xl mt-1">
-              بررسی خوداظهاری‌های دریافتی از صنایع استان زنجان، اعمال ممیزی ۴ محوره و صدور احکام معافیت ماده ۲۷ مالیات بر ارزش افزوده.
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
+              کارتابل ممیزی و تایید اقدامات زیست‌محیطی صنایع
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mt-1">
+              بررسی خوداظهاری‌های ارسالی صنایع، تایید مدارک آزمایشگاهی، اعمال امتیاز انطباق و صدور احکام معافیت ماده ۲۷.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 text-center">
-              <span className="text-[10px] text-slate-400 block">واحدهای ثبت‌شده</span>
-              <strong className="text-sm text-emerald-400 font-bold">{companies.length} شرکت</strong>
+            <div className="px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+              <span className="text-[10px] text-slate-500 block">واحدهای ثبت‌شده</span>
+              <strong className="text-base text-emerald-800 font-bold">{companies.length} شرکت</strong>
             </div>
-            <div className="px-4 py-2.5 rounded-2xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 text-center">
-              <span className="text-[10px] text-slate-400 block">گزارشات در انتظار</span>
-              <strong className="text-sm text-amber-400 font-bold">
+            <div className="px-4 py-3 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+              <span className="text-[10px] text-amber-700 block">گزارشات در صف بررسی</span>
+              <strong className="text-base text-amber-900 font-bold">
                 {logs.filter((l) => l.status === 'under_review').length} مورد
               </strong>
             </div>
@@ -142,16 +170,16 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
         </div>
       </div>
 
-      {/* Part 1: Review Queue */}
-      <div className="rounded-3xl border border-slate-800 bg-slate-900/90 backdrop-blur-xl p-6 shadow-xl space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      {/* Review Queue */}
+      <div className="rounded-3xl bg-white border border-emerald-100 p-6 sm:p-8 shadow-xs space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <FileCheck2 className="w-4 h-4 text-teal-400" />
-              صف بررسی خوداظهاری و اقدامات زیست‌محیطی صنایع
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <FileCheck2 className="w-4 h-4 text-emerald-600" />
+              صف بررسی خوداظهاری‌ها (تایید بلادرنگ و اعطای امتیاز)
             </h3>
-            <p className="text-xs text-slate-400">
-              واحدهای صنعتی واقع در شهرستان‌های زنجان، ماهنشان، ابهر و سایر نقاط استان
+            <p className="text-xs text-slate-500">
+              با تایید هر اقدام، امتیاز شرکت به‌صورت آنی افزایش یافته و مشمولیت تخفیف مالیاتی ارزیابی می‌شود.
             </p>
           </div>
         </div>
@@ -159,38 +187,38 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
         <div className="space-y-3">
           {logs.map((log) => {
             const isExpanded = expandedLogId === log._id;
-            const statusColor =
+            const statusCardClass =
               log.status === 'approved'
-                ? 'border-emerald-500/40 bg-emerald-950/10'
+                ? 'border-emerald-200 bg-emerald-50/30'
                 : log.status === 'under_review'
-                ? 'border-amber-500/40 bg-amber-950/10'
-                : 'border-rose-500/40 bg-rose-950/10';
+                ? 'border-amber-200 bg-amber-50/30'
+                : 'border-rose-200 bg-rose-50/30';
 
             return (
               <div
                 key={log._id}
-                className={`rounded-2xl border transition-all ${statusColor} overflow-hidden`}
+                className={`rounded-2xl border transition-all ${statusCardClass} overflow-hidden`}
               >
                 {/* Collapsed Bar */}
                 <div
                   onClick={() => setExpandedLogId(isExpanded ? null : log._id)}
-                  className="p-4 cursor-pointer flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-slate-800/40 transition-colors"
+                  className="p-4 cursor-pointer flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-slate-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-slate-800 border border-slate-700 text-teal-400">
+                    <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-teal-700 shadow-2xs">
                       <Building2 className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-bold text-white">{log.companyId.name}</h4>
-                        <span className="text-[11px] text-emerald-400 font-medium">
+                        <h4 className="text-xs font-bold text-slate-900">{log.companyId.name}</h4>
+                        <span className="text-[11px] text-emerald-700 font-semibold">
                           ({log.companyId.countyFa})
                         </span>
                         <span className="text-[11px] text-slate-400">• {log.period}</span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-[11px] text-slate-500 mt-0.5">
                         {log.wasteManagement.tailingsNeutralizedTons.toLocaleString('fa-IR')} تن باطله •{' '}
-                        {log.waterResources.recyclingRatePercentage}٪ بازچرخانی آب •{' '}
+                        {log.waterResources.recyclingRatePercentage}٪ بازچرخانی •{' '}
                         {log.airAndDust.bagFilterEfficiency}٪ فیلتراسیون
                       </p>
                     </div>
@@ -200,10 +228,10 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
                     <span
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${
                         log.status === 'approved'
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                           : log.status === 'under_review'
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                          : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-rose-50 text-rose-800 border-rose-200'
                       }`}
                     >
                       {log.statusFa}
@@ -216,63 +244,62 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
 
                 {/* Expanded Details & Actions */}
                 {isExpanded && (
-                  <div className="p-5 border-t border-slate-800/80 bg-slate-900/60 space-y-4 text-xs">
+                  <div className="p-5 border-t border-slate-100 bg-white space-y-4 text-xs">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                      <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
-                        <span className="text-slate-400 block mb-1">مدیریت پسماند و باطله</span>
-                        <p className="font-semibold text-white">
-                          تثبیت {log.wasteManagement.tailingsNeutralizedTons} از {log.wasteManagement.tailingsProducedTons} تن
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 block mb-1">مدیریت پسماند و باطله</span>
+                        <p className="font-bold text-slate-900">
+                          {log.wasteManagement.tailingsNeutralizedTons.toLocaleString('fa-IR')} تن خنثی‌شده
                         </p>
-                        <p className="text-[11px] text-emerald-400 mt-1">
-                          {log.wasteManagement.filterPressActive ? '✓ فیلترپرس فعال' : '✗ فاقد فیلترپرس'} •{' '}
-                          {log.wasteManagement.geomembraneIsolation ? '✓ ژئوممبران' : '✗ بدون عایق'}
-                        </p>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
-                        <span className="text-slate-400 block mb-1">حفاظت از منابع آب و قزل‌اوزن</span>
-                        <p className="font-semibold text-white">
-                          نرخ بازچرخانی: {log.waterResources.recyclingRatePercentage}٪
-                        </p>
-                        <p className="text-[11px] text-cyan-400 mt-1">
-                          {log.waterResources.zeroLiquidDischargeActive ? '✓ تخلیه مایع صفر (ZLD)' : 'فاقد ZLD'}
+                        <p className="text-[11px] text-emerald-700 mt-1">
+                          {log.wasteManagement.filterPressActive ? '✓ فیلترپرس فعال' : '✗ فاقد فیلترپرس'}
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
-                        <span className="text-slate-400 block mb-1">کنترل غبار و فضای سبز</span>
-                        <p className="font-semibold text-white">
-                          راندمان بگ‌فیلتر: {log.airAndDust.bagFilterEfficiency}٪
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 block mb-1">حفاظت از منابع آب</span>
+                        <p className="font-bold text-slate-900">
+                          {log.waterResources.recyclingRatePercentage}٪ بازچرخانی
                         </p>
-                        <p className="text-[11px] text-emerald-400 mt-1">
+                        <p className="text-[11px] text-cyan-700 mt-1">
+                          {log.waterResources.zeroLiquidDischargeActive ? '✓ تخلیه صفر (ZLD)' : 'فاقد ZLD'}
+                        </p>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 block mb-1">فیلتراسیون هوا</span>
+                        <p className="font-bold text-slate-900">
+                          {log.airAndDust.bagFilterEfficiency}٪ راندمان
+                        </p>
+                        <p className="text-[11px] text-emerald-700 mt-1">
                           فضای سبز: {log.airAndDust.greenSpaceAreaM2.toLocaleString('fa-IR')} م²
                         </p>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700">
-                        <span className="text-slate-400 block mb-1">مسئولیت اجتماعی و آموزش</span>
-                        <p className="font-semibold text-white">
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 block mb-1">مسئولیت اجتماعی CSR</span>
+                        <p className="font-bold text-slate-900">
                           {((log.csrAndEducation.csrBudgetRials || 0) / 10000000).toLocaleString('fa-IR')} میلیون تومان
                         </p>
-                        <p className="text-[11px] text-violet-400 mt-1">
+                        <p className="text-[11px] text-violet-700 mt-1">
                           آموزش: {log.csrAndEducation.staffTrainingHours} ساعت
                         </p>
                       </div>
                     </div>
 
-                    {/* Evidence Files */}
+                    {/* Files */}
                     {log.evidenceFiles.length > 0 && (
-                      <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60">
-                        <span className="text-slate-400 block mb-2 font-semibold">
-                          مدارک و مستندات پیوستی:
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 block mb-2 font-bold">
+                          مدارک آزمایشگاهی پیوستی:
                         </span>
                         <div className="flex flex-wrap gap-2">
                           {log.evidenceFiles.map((file) => (
                             <div
                               key={file.id}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 border border-emerald-500/30 text-emerald-300"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-800"
                             >
-                              <FileText className="w-3.5 h-3.5 text-emerald-400" />
+                              <FileText className="w-3.5 h-3.5 text-emerald-600" />
                               <span>{file.fileName}</span>
                             </div>
                           ))}
@@ -280,43 +307,43 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
                       </div>
                     )}
 
-                    {/* Inspector Action & Notes Input */}
-                    <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    {/* Inspector Action & Notes */}
+                    <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                       <div className="flex-1">
                         <input
                           type="text"
-                          placeholder="یادداشت ممیز (نکات بازرسی میدانی یا دلایل رد / درخواست اصلاح)..."
+                          placeholder="یادداشت ممیز (نکات بازرسی، دستور رفع نقص یا تقدیر)..."
                           value={inspectorNotes[log._id] || ''}
                           onChange={(e) =>
                             setInspectorNotes({ ...inspectorNotes, [log._id]: e.target.value })
                           }
-                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500"
                         />
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
                         <button
-                          onClick={() => handleAction(log._id, 'approved')}
-                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all"
+                          onClick={() => handleApproveAndScore(log)}
+                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          تایید اقدام
+                          تایید و اعطای امتیاز
                         </button>
 
                         <button
-                          onClick={() => handleAction(log._id, 'revision_required')}
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all"
+                          onClick={() => handleRejectOrRevise(log._id, 'revision_required')}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition-all cursor-pointer"
                         >
                           <AlertTriangle className="w-3.5 h-3.5" />
                           درخواست اصلاح
                         </button>
 
                         <button
-                          onClick={() => handleAction(log._id, 'rejected')}
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all"
+                          onClick={() => handleRejectOrRevise(log._id, 'rejected')}
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold transition-all cursor-pointer"
                         >
                           <XCircle className="w-3.5 h-3.5" />
-                          رد اقدام
+                          رد گزارش
                         </button>
                       </div>
                     </div>
@@ -328,26 +355,25 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
         </div>
       </div>
 
-      {/* Part 2: Interactive Scoring & Incentive Calculator */}
-      <div className="rounded-3xl border border-teal-500/30 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
+      {/* Interactive Scoring Calculator & Voucher Generator */}
+      <div className="rounded-3xl bg-white border border-emerald-100 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Calculator className="w-5 h-5 text-teal-400" />
-              ماشین‌حساب هوشمند ممیزی و صدور گواهینامه صنعت سبز (ماده ۲۷)
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-emerald-600" />
+              ماشین‌حساب هوشمند ممیزی و صدور گواهی صنعت سبز (ماده ۲۷)
             </h3>
-            <p className="text-xs text-slate-400">
-              محاسبه آنی امتیاز انطباق بر پایه فرمول ۴ محوره مصوب کارگروه ارتقای فرهنگ حفاظت محیط‌زیست استان زنجان
+            <p className="text-xs text-slate-500">
+              محاسبه ۴ محوره امتیاز انطباق بر پایه مصوبات شورای فرهنگ عمومی و کارگروه حفاظت محیط‌زیست زنجان
             </p>
           </div>
 
-          {/* Select Target Company */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">انتخاب واحد صنعتی:</span>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-slate-500">واحد مورد ارزیابی:</span>
             <select
               value={selectedCalcCompanyId}
               onChange={(e) => setSelectedCalcCompanyId(e.target.value)}
-              className="bg-slate-800 text-white border border-teal-500/40 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-teal-400"
+              className="bg-slate-50 text-slate-900 border border-slate-200 rounded-xl px-3 py-1.5 font-bold focus:outline-none focus:border-emerald-500"
             >
               {companies.map((c) => (
                 <option key={c._id} value={c._id}>
@@ -358,127 +384,115 @@ export const AdminAuditView: React.FC<AdminAuditViewProps> = ({
           </div>
         </div>
 
-        {/* 4 Interactive Sliders based on the Document */}
+        {/* 4 Sliders */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pillar 1 */}
-          <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-200">
-                ۱. رعایت ضوابط پایه و عدم تخلفات قضایی (۳۰٪)
+              <span className="font-bold text-slate-800">
+                ۱. ضوابط پایه و عدم تخلفات قضایی (۳۰٪)
               </span>
-              <span className="text-teal-400 font-bold font-mono text-sm">
+              <span className="text-emerald-700 font-bold font-mono text-sm">
                 {baseComplianceScore} / ۳۰
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              عدم اخطار قضایی، فعال بودن سامانه پایش آنلاین دودکش و پساب
-            </p>
+            <p className="text-[11px] text-slate-500">عدم اخطار قضایی و فعال بودن پایش آنلاین</p>
             <input
               type="range"
               min={0}
               max={30}
               value={baseComplianceScore}
               onChange={(e) => setBaseComplianceScore(Number(e.target.value))}
-              className="w-full accent-teal-500 cursor-pointer"
+              className="w-full accent-emerald-600 cursor-pointer"
             />
           </div>
 
-          {/* Pillar 2 */}
-          <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-200">
-                ۲. کاهش کمی آلاینده‌ها و مدیریت پسماند/آب (۳۰٪)
+              <span className="font-bold text-slate-800">
+                ۲. کاهش آلاینده‌ها و مدیریت پسماند/آب (۳۰٪)
               </span>
-              <span className="text-teal-400 font-bold font-mono text-sm">
+              <span className="text-emerald-700 font-bold font-mono text-sm">
                 {pollutantReductionScore} / ۳۰
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              راه‌اندازی فیلترپرس و ایزولاسیون باطله، بازچرخانی آب بالای ۶۰٪ یا عدم تخلیه به قزل‌اوزن
-            </p>
+            <p className="text-[11px] text-slate-500">فیلترپرس باطله و بازچرخانی آب قزل‌اوزن</p>
             <input
               type="range"
               min={0}
               max={30}
               value={pollutantReductionScore}
               onChange={(e) => setPollutantReductionScore(Number(e.target.value))}
-              className="w-full accent-teal-500 cursor-pointer"
+              className="w-full accent-emerald-600 cursor-pointer"
             />
           </div>
 
-          {/* Pillar 3 */}
-          <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-200">
-                ۳. مسئولیت اجتماعی CSR و آموزش محیط‌زیستی (۲۰٪)
+              <span className="font-bold text-slate-800">
+                ۳. مسئولیت اجتماعی CSR و آموزش (۲۰٪)
               </span>
-              <span className="text-teal-400 font-bold font-mono text-sm">
+              <span className="text-emerald-700 font-bold font-mono text-sm">
                 {csrAndEducationScore} / ۲۰
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              خدمات بهداشتی به روستاهای مجاور، دوره‌های آموزشی کارکنان
-            </p>
+            <p className="text-[11px] text-slate-500">خدمات بهداشتی به روستاها و دوره‌های پرسنل</p>
             <input
               type="range"
               min={0}
               max={20}
               value={csrAndEducationScore}
               onChange={(e) => setCsrAndEducationScore(Number(e.target.value))}
-              className="w-full accent-teal-500 cursor-pointer"
+              className="w-full accent-emerald-600 cursor-pointer"
             />
           </div>
 
-          {/* Pillar 4 */}
-          <div className="p-4 rounded-2xl bg-slate-850 border border-slate-700/80 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-bold text-slate-200">
-                ۴. نظم در خوداظهاری و پایش دوره‌ای آزمایشگاه (۲۰٪)
+              <span className="font-bold text-slate-800">
+                ۴. نظم در خوداظهاری و پایش معتمد (۲۰٪)
               </span>
-              <span className="text-teal-400 font-bold font-mono text-sm">
+              <span className="text-emerald-700 font-bold font-mono text-sm">
                 {proactiveAuditScore} / ۲۰
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              ارسال بموقع گزارشات فصلی و نتایج آزمایشگاه‌های معتمد محیط‌زیست
-            </p>
+            <p className="text-[11px] text-slate-500">ارسال فصلی مدارک آزمایشگاه معتمد</p>
             <input
               type="range"
               min={0}
               max={20}
               value={proactiveAuditScore}
               onChange={(e) => setProactiveAuditScore(Number(e.target.value))}
-              className="w-full accent-teal-500 cursor-pointer"
+              className="w-full accent-emerald-600 cursor-pointer"
             />
           </div>
         </div>
 
-        {/* Calculation Result & Issue Button Bar */}
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-850 to-teal-950 border border-teal-500/40 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-right">
-            <div className="flex items-center justify-center md:justify-start gap-3">
-              <span className="text-xs text-slate-400">جمع امتیاز نهایی ممیزی:</span>
-              <span className="text-3xl font-black text-white font-vazir">
+        {/* Calculation Result */}
+        <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-600">امتیاز نهایی محاسبه‌شده:</span>
+              <span className="text-2xl font-black text-emerald-950 font-vazir">
                 {totalCalculatedScore}
               </span>
-              <span className="text-xs text-slate-400">از ۱۰۰</span>
+              <span className="text-xs text-slate-500">/ ۱۰۰</span>
             </div>
-            <p className="text-xs font-bold text-teal-300">{tierTitleFa}</p>
+            <p className="text-xs font-bold text-emerald-800 mt-1">{tierTitleFa}</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div>
             {totalCalculatedScore >= 70 ? (
               <button
-                onClick={handleIssueVoucher}
-                className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-xl shadow-teal-950 transition-all hover:scale-105"
+                onClick={handleManualIssueVoucher}
+                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all hover:scale-102 cursor-pointer"
               >
-                <Award className="w-5 h-5 text-amber-300" />
+                <Award className="w-4 h-4 text-amber-300" />
                 صدور مجوز تخفیف و گواهی صنعت سبز (ماده ۲۷)
               </button>
             ) : (
-              <div className="text-xs text-rose-400 bg-rose-950/40 px-4 py-3 rounded-xl border border-rose-800/40">
-                امتیاز کمتر از ۷۰ است. امکان صدور معافیت مالیاتی وجود ندارد.
-              </div>
+              <span className="text-xs text-rose-700 font-bold bg-rose-50 px-3 py-2 rounded-xl border border-rose-200">
+                امتیاز کمتر از ۷۰ است و حائز معافیت نمی‌باشد.
+              </span>
             )}
           </div>
         </div>

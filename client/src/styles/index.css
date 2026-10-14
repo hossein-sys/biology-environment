@@ -3,20 +3,23 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
   }
   
-  /* Custom scrollbar for dark modern theme */
+  /* Custom scrollbar for crisp light emerald theme */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0f172a;
+    background: #f1f5f9;
   }
   ::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: #cbd5e1;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -37,9 +40,11 @@
     top: 0;
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     background: white !important;
     color: black !important;
+    box-shadow: none !important;
+    border: 3px double #d97706 !important;
   }
   .no-print {
     display: none !important;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
+import { FloatingHeader } from './components/FloatingHeader';
+import { LandingPageView } from './components/LandingPageView';
 import { CompanyDashboardView } from './components/CompanyDashboardView';
 import { AdminAuditView } from './components/AdminAuditView';
 import { CertificateView } from './components/CertificateView';
@@ -8,14 +9,13 @@ import { AuthModal } from './components/AuthModal';
 import { CertificateVoucherModal } from './components/CertificateVoucherModal';
 import { storageService } from './services/storage';
 import { Company, ActivityLog, DiscountIncentive } from './types';
+import { ShieldCheck, Heart, Leaf } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<'company_rep' | 'inspector'>(
     storageService.getCurrentRole()
   );
-  const [activeTab, setActiveTab] = useState<'company' | 'admin' | 'certificate' | 'leaderboard'>(
-    'company'
-  );
+  const [activeView, setActiveView] = useState<'home' | 'dashboard' | 'rewards' | 'leaderboard' | 'admin'>('home');
   const [companies, setCompanies] = useState<Company[]>(storageService.getCompanies());
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>(
     storageService.getSelectedCompanyId()
@@ -43,25 +43,15 @@ export const App: React.FC = () => {
     setCurrentRole(role);
     storageService.setCurrentRole(role);
     if (role === 'inspector') {
-      setActiveTab('admin');
+      setActiveView('admin');
     } else {
-      setActiveTab('company');
+      setActiveView('dashboard');
     }
   };
 
   const handleCompanyChange = (id: string) => {
     setSelectedCompanyId(id);
     storageService.setSelectedCompanyId(id);
-  };
-
-  const handleResetData = () => {
-    if (window.confirm('آیا مایل به بازنشانی اطلاعات تستی اولیه به حالت پیش‌فرض هستید؟')) {
-      storageService.resetData();
-      refreshAllData();
-      setSelectedCompanyId(storageService.getSelectedCompanyId());
-      setCurrentRole('company_rep');
-      setActiveTab('company');
-    }
   };
 
   const activeCompany =
@@ -75,34 +65,43 @@ export const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-vazir selection:bg-emerald-500 selection:text-white" dir="rtl">
-      {/* Navbar with Role Switcher & Tabs */}
-      <Navbar
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-vazir selection:bg-emerald-500 selection:text-white" dir="rtl">
+      {/* Floating Glassmorphism Header */}
+      <FloatingHeader
         currentRole={currentRole}
         onRoleChange={handleRoleChange}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
+        activeView={activeView}
+        onViewChange={setActiveView}
         companies={companies}
         selectedCompanyId={selectedCompanyId}
         onCompanyChange={handleCompanyChange}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
-        onResetData={handleResetData}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'company' && activeCompany && (
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        {activeView === 'home' && (
+          <LandingPageView
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onNavigateToDashboard={() => setActiveView('dashboard')}
+            onNavigateToLeaderboard={() => setActiveView('leaderboard')}
+            onNavigateToRewards={() => setActiveView('rewards')}
+            topCompanies={companies}
+          />
+        )}
+
+        {activeView === 'dashboard' && activeCompany && (
           <CompanyDashboardView
             company={activeCompany}
             logs={activeCompanyLogs}
             vouchers={activeCompanyVouchers}
             onOpenCertificateModal={(v) => setSelectedVoucherForModal(v)}
             onRefreshData={refreshAllData}
-            onNavigateToTab={setActiveTab}
+            onNavigateToRewards={() => setActiveView('rewards')}
           />
         )}
 
-        {activeTab === 'admin' && (
+        {activeView === 'admin' && (
           <AdminAuditView
             companies={companies}
             logs={logs}
@@ -111,7 +110,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'certificate' && (
+        {activeView === 'rewards' && (
           <CertificateView
             vouchers={vouchers}
             companies={companies}
@@ -119,28 +118,36 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'leaderboard' && (
+        {activeView === 'leaderboard' && (
           <LeaderboardView
             companies={companies}
             onSelectCompany={(c) => {
               handleCompanyChange(c._id);
-              setActiveTab('company');
+              setActiveView('dashboard');
             }}
           />
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="no-print mt-auto border-t border-slate-800 bg-slate-900/60 py-6 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-right">
-          <div>
-            <span className="font-semibold text-slate-300">
-              سامانه پایش عملکرد و صنعت سبز استان زنجان
-            </span>{' '}
-            — دبیرخانه شورای فرهنگ عمومی و کارگروه ارتقای فرهنگ حفاظت محیط‌زیست
+      {/* Footer (Hidden in Print) */}
+      <footer className="no-print mt-auto border-t border-emerald-100 bg-white py-8 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <Leaf className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="font-bold text-slate-800">
+                سامانه پایش عملکرد و صنعت سبز استان زنجان
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                دبیرخانه شورای فرهنگ عمومی استان • کارگروه ارتقای فرهنگ حفاظت محیط‌زیست
+              </p>
+            </div>
           </div>
-          <div className="text-[11px] text-slate-500">
-            نسخه پیش‌نمایش MVP فرانت‌اند • منطبق بر ماده ۲۷ قانون مالیات بر ارزش افزوده
+
+          <div className="text-[11px] text-slate-400 max-w-md">
+            اجرای ماده ۲۷ قانون مالیات بر ارزش افزوده و شیوه نامه استانی پایش فلزات سنگین سرب و روی، رودخانه قزل‌اوزن و دپوهای باطله
           </div>
         </div>
       </footer>
@@ -152,11 +159,12 @@ export const App: React.FC = () => {
         onCompanyCreatedOrSelected={(comp) => {
           refreshAllData();
           handleCompanyChange(comp._id);
+          setActiveView('dashboard');
         }}
         onSelectRole={handleRoleChange}
       />
 
-      {/* Certificate Print & Inspection Modal */}
+      {/* Print Certificate Modal */}
       {selectedVoucherForModal && (
         <CertificateVoucherModal
           voucher={selectedVoucherForModal}
