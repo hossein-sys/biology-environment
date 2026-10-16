@@ -96,97 +96,97 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* KPI 1: Score */}
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100/80 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500">امتیاز عملکرد رسمی</span>
-            <div className="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">امتیاز عملکرد رسمی</span>
+            <div className="w-9 h-9 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-800">{agency.totalScore}</span>
+            <span className="text-3xl font-black text-slate-800 dark:text-slate-100">{agency.totalScore}</span>
             <span className="text-xs text-slate-400 font-medium">از ۱۰۰ امتیاز</span>
           </div>
-          <div className="mt-3 w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div className="mt-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
             <div
               className="bg-emerald-500 h-full rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, agency.totalScore)}%` }}
             />
           </div>
-          <p className="text-[11px] text-emerald-700 font-medium mt-2 flex items-center gap-1">
+          <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium mt-2 flex items-center gap-1">
             <Sparkles className="w-3 h-3" />
             سطح عملکرد ممتاز در استان زنجان
           </p>
         </div>
 
         {/* KPI 2: Rank */}
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100/80 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500">رتبه در بین ادارات کل</span>
-            <div className="w-9 h-9 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">رتبه در بین ادارات کل</span>
+            <div className="w-9 h-9 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Trophy className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-amber-600">#{agency.rank}</span>
+            <span className="text-3xl font-black text-amber-600 dark:text-amber-400">#{agency.rank}</span>
             <span className="text-xs text-slate-400 font-medium">رتبه کل استان</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-4 truncate">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-4 truncate">
             {agency.awardBadge || 'دستگاه فعال در ترویج فرهنگ محیط‌زیست'}
           </p>
         </div>
 
         {/* KPI 3: Total Hours */}
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100/80 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500">ساعات آموزش تایید شده</span>
-            <div className="w-9 h-9 rounded-2xl bg-teal-50 flex items-center justify-center text-teal-600">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">ساعات آموزش تایید شده</span>
+            <div className="w-9 h-9 rounded-2xl bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center">
               <Clock className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-800">
+            <span className="text-3xl font-black text-slate-800 dark:text-slate-100">
               {totalApprovedHours || agency.totalHours}
             </span>
             <span className="text-xs text-slate-400 font-medium">ساعت دوره و رویداد</span>
           </div>
-          <p className="text-[11px] text-teal-700 font-medium mt-4">
+          <p className="text-[11px] text-teal-700 dark:text-teal-400 font-medium mt-4">
             توزیع شده در سطح شهرستان‌های هدف
           </p>
         </div>
 
         {/* KPI 4: Audience */}
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100/80 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500">مخاطبان و فراگیران</span>
-            <div className="w-9 h-9 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">مخاطبان و فراگیران</span>
+            <div className="w-9 h-9 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <Users className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-800">
+            <span className="text-3xl font-black text-slate-800 dark:text-slate-100">
               {totalApprovedAudience || agency.totalAudience}
             </span>
             <span className="text-xs text-slate-400 font-medium">نفر مخاطب مستقیم</span>
           </div>
-          <p className="text-[11px] text-blue-700 font-medium mt-4">
+          <p className="text-[11px] text-blue-700 dark:text-blue-400 font-medium mt-4">
             معلمان، شهروندان، کشاورزان و پرسنل
           </p>
         </div>
       </div>
 
       {/* Events Log & Management Table */}
-      <div className="bg-white rounded-3xl border border-emerald-100/80 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-100/80 dark:border-slate-800 shadow-sm overflow-hidden transition-colors">
         {/* Table Header & Filters */}
-        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
+            <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <span>کارنامه و پرونده اقدامات ثبت شده</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 font-bold">
                 {agencyEvents.length} اقدام
               </span>
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
               پیگیری آخرین وضعیت کارگاه‌ها، نظرات ارزیابان و امتیازات مکتسبه
             </p>
           </div>
@@ -200,19 +200,19 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                 placeholder="جستجو در عناوین و مدرسان..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-9 pl-3 py-1.5 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 outline-none focus:border-emerald-500 w-48 sm:w-64"
+                className="pr-9 pl-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-emerald-500 w-48 sm:w-64"
               />
             </div>
 
             {/* Status Filter */}
-            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200 text-xs">
+            <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
               <Filter className="w-3.5 h-3.5 text-slate-400 mr-2" />
               <button
                 onClick={() => setFilterStatus('all')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
                   filterStatus === 'all'
-                    ? 'bg-white text-emerald-700 shadow-xs font-bold'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 shadow-xs font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
                 همه ({agencyEvents.length})
@@ -221,8 +221,8 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                 onClick={() => setFilterStatus('approved')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
                   filterStatus === 'approved'
-                    ? 'bg-white text-emerald-700 shadow-xs font-bold'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 shadow-xs font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
                 تایید شده ({approvedEvents.length})
@@ -231,8 +231,8 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                 onClick={() => setFilterStatus('pending')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
                   filterStatus === 'pending'
-                    ? 'bg-white text-amber-700 shadow-xs font-bold'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-700 text-amber-700 dark:text-amber-300 shadow-xs font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
                 در انتظار ({pendingEvents.length})
@@ -264,7 +264,7 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-right text-xs">
-              <thead className="bg-slate-50/80 text-slate-500 border-b border-slate-100 font-bold">
+              <thead className="bg-slate-50/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 font-bold">
                 <tr>
                   <th className="py-3 px-5">عنوان اقدام و موضوع</th>
                   <th className="py-3 px-4">مدرس / مجری</th>
@@ -275,59 +275,59 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                   <th className="py-3 px-4 text-center">عملیات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {filteredEvents.map((event) => (
                   <tr
                     key={event._id}
-                    className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer"
                     onClick={() => setSelectedEvent(event)}
                   >
                     <td className="py-4 px-5">
-                      <div className="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors text-xs sm:text-sm">
+                      <div className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors text-xs sm:text-sm">
                         {event.title}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-2">
-                        <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600">
+                      <div className="text-[11px] text-slate-400 dark:text-slate-400 mt-1 flex items-center gap-2">
+                        <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-300">
                           {event.categoryFa}
                         </span>
                         <span>•</span>
                         <span>مخاطب: {event.targetAudienceFa}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-4 font-medium text-slate-800">
+                    <td className="py-4 px-4 font-medium text-slate-800 dark:text-slate-200">
                       <div>{event.instructorName}</div>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[150px]">
+                      <div className="text-[10px] text-slate-400 dark:text-slate-400 truncate max-w-[150px]">
                         مجری: {event.organizerName}
                       </div>
                     </td>
                     <td className="py-4 px-4">
-                      <div className="font-bold text-slate-800">{event.countyFa}</div>
-                      <div className="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center gap-1">
+                      <div className="font-bold text-slate-800 dark:text-slate-200">{event.countyFa}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-slate-400 font-mono mt-0.5 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {event.eventDate}
                       </div>
                     </td>
                     <td className="py-4 px-4">
-                      <div className="font-bold text-slate-800">
+                      <div className="font-bold text-slate-800 dark:text-slate-200">
                         {event.durationHours} ساعت
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
                         {event.attendeeCount} فراگیر
                       </div>
                     </td>
                     <td className="py-4 px-4">
                       {event.status === 'approved' ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 text-[11px]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800 text-[11px]">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>تایید شده</span>
                         </span>
                       ) : event.status === 'pending' ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-bold border border-amber-200 text-[11px]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 font-bold border border-amber-200 dark:border-amber-800 text-[11px]">
                           <Clock className="w-3.5 h-3.5" />
                           <span>در انتظار بررسی</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 font-bold border border-rose-200 text-[11px]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 font-bold border border-rose-200 dark:border-rose-800 text-[11px]">
                           <AlertCircle className="w-3.5 h-3.5" />
                           <span>نیازمند اصلاح</span>
                         </span>
@@ -335,7 +335,7 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                     </td>
                     <td className="py-4 px-4">
                       {event.awardedPoints > 0 ? (
-                        <span className="font-black text-emerald-700 text-sm bg-emerald-50 px-2.5 py-1 rounded-lg">
+                        <span className="font-black text-emerald-700 dark:text-emerald-300 text-sm bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-1 rounded-lg">
                           +{event.awardedPoints}
                         </span>
                       ) : (
@@ -348,7 +348,7 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                           e.stopPropagation();
                           setSelectedEvent(event);
                         }}
-                        className="p-1.5 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition-colors"
+                        className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/80 text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
                         title="مشاهده جزئیات و نظر داور"
                       >
                         <Eye className="w-4 h-4" />
@@ -364,19 +364,19 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
 
       {/* Event Detail Modal (when clicked) */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden max-h-[85vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-emerald-100 dark:border-slate-800 overflow-hidden max-h-[85vh] flex flex-col transition-colors">
             {/* Header */}
-            <div className="bg-slate-50 border-b border-slate-100 p-5 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800 p-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-bold text-sm text-slate-800">
+                <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">
                   پرونده اقدام زیست‌محیطی
                 </h3>
               </div>
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="p-1.5 rounded-full hover:bg-slate-200 text-slate-500"
+                className="p-1.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
               >
                 ✕
               </button>
@@ -385,10 +385,10 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
             {/* Content */}
             <div className="p-6 overflow-y-auto space-y-4 text-xs">
               <div>
-                <h4 className="text-sm font-black text-slate-900 leading-snug">
+                <h4 className="text-sm font-black text-slate-900 dark:text-slate-100 leading-snug">
                   {selectedEvent.title}
                 </h4>
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-1">
                   دستگاه: {selectedEvent.agencyName} • شهرستان {selectedEvent.countyFa}
                 </p>
               </div>
@@ -397,10 +397,10 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
               <div
                 className={`p-3.5 rounded-2xl border ${
                   selectedEvent.status === 'approved'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
                     : selectedEvent.status === 'pending'
-                    ? 'bg-amber-50 border-amber-200 text-amber-900'
-                    : 'bg-rose-50 border-rose-200 text-rose-900'
+                    ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200'
+                    : 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
                 }`}
               >
                 <div className="flex items-center justify-between font-bold mb-1">
@@ -417,54 +417,54 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
                     {selectedEvent.reviewerNotes}
                   </p>
                 ) : (
-                  <p className="text-[11px] text-slate-500 mt-1">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                     پرونده در صف بررسی کارشناسان کارگروه ارتقای فرهنگ محیط‌زیست استان قرار دارد.
                   </p>
                 )}
               </div>
 
               {/* Instructor & Details */}
-              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-2">
+              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">مدرس دوره:</span>
-                  <span className="font-bold text-slate-800">{selectedEvent.instructorName}</span>
+                  <span className="text-slate-500 dark:text-slate-400">مدرس دوره:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">{selectedEvent.instructorName}</span>
                 </div>
-                <div className="text-slate-600 text-[11px] leading-relaxed">
-                  <span className="text-slate-400">سوابق مدرس: </span>
+                <div className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                  <span className="text-slate-400 dark:text-slate-400">سوابق مدرس: </span>
                   {selectedEvent.instructorResume}
                 </div>
-                <div className="pt-2 border-t border-slate-200 flex justify-between">
-                  <span className="text-slate-500">مدت و حاضرین:</span>
-                  <span className="font-bold text-slate-800">
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between">
+                  <span className="text-slate-500 dark:text-slate-400">مدت و حاضرین:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {selectedEvent.durationHours} ساعت / {selectedEvent.attendeeCount} نفر
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">اثربخشی اعلام‌شده:</span>
-                  <span className="font-bold text-emerald-700">{selectedEvent.effectivenessFa}</span>
+                  <span className="text-slate-500 dark:text-slate-400">اثربخشی اعلام‌شده:</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">{selectedEvent.effectivenessFa}</span>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <h5 className="font-bold text-slate-700 mb-1">شرح و دستاوردها:</h5>
-                <p className="text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <h5 className="font-bold text-slate-700 dark:text-slate-300 mb-1">شرح و دستاوردها:</h5>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
                   {selectedEvent.description}
                 </p>
               </div>
 
               {/* Evidence files */}
               <div>
-                <h5 className="font-bold text-slate-700 mb-1">مدارک و ضمائم:</h5>
+                <h5 className="font-bold text-slate-700 dark:text-slate-300 mb-1">مدارک و ضمائم:</h5>
                 <div className="space-y-1.5">
                   {selectedEvent.evidenceFiles.map((file) => (
                     <div
                       key={file.id}
-                      className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]"
+                      className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-[11px]"
                     >
                       <div className="flex items-center gap-2">
-                        <FileText className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="font-medium text-slate-700">{file.name}</span>
+                        <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{file.name}</span>
                       </div>
                       <span className="text-slate-400 font-mono text-[10px]">
                         {file.size}
@@ -476,10 +476,10 @@ export const GovernmentalDashboard: React.FC<GovernmentalDashboardProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold"
+                className="px-5 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold"
               >
                 بستن پنجره
               </button>

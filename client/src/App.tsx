@@ -16,10 +16,25 @@ export const App: React.FC = () => {
   const [selectedAgencyId, setSelectedAgencyId] = useState<string>('');
   const [currentRole, setCurrentRole] = useState<'agency_rep' | 'provincial_evaluator'>('agency_rep');
   const [activeView, setActiveView] = useState<'landing' | 'dashboard' | 'leaderboard' | 'admin'>('landing');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => agencyStorageService.getTheme());
 
   // Modals state
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState<boolean>(false);
+
+  // Sync dark class on documentElement
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    agencyStorageService.setTheme(theme);
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   // Sync state from agencyStorageService
   const refreshData = () => {
@@ -89,7 +104,7 @@ export const App: React.FC = () => {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-vazirmatn antialiased selection:bg-emerald-200 selection:text-emerald-900"
+      className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-vazirmatn antialiased selection:bg-emerald-200 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 transition-colors duration-200"
     >
       {/* Floating Glassmorphic Header */}
       <GovernmentalHeader
@@ -102,6 +117,8 @@ export const App: React.FC = () => {
         onAgencyChange={handleAgencyChange}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onResetData={handleResetData}
+        isDark={theme === 'dark'}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main Content Area */}
@@ -143,35 +160,35 @@ export const App: React.FC = () => {
       </main>
 
       {/* Official Footer */}
-      <footer className="no-print mt-auto border-t border-slate-200/80 bg-white py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-500">
+      <footer className="no-print mt-auto border-t border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-500 dark:text-slate-400 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-bold text-slate-800 text-sm">
+              <p className="font-bold text-slate-800 dark:text-slate-100 text-sm">
                 سامانه پایش عملکرد و ارتقای فرهنگ محیط‌زیست ادارات استان زنجان
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                 دبیرخانه شورای فرهنگ عمومی استان • اداره کل حفاظت محیط‌زیست زنجان
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-500 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-500 dark:text-slate-400 text-xs">
             <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+              <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>پوشش شهرستان‌های هشت‌گانه استان زنجان</span>
             </span>
             <span>•</span>
-            <span className="text-emerald-700 font-medium">
+            <span className="text-emerald-700 dark:text-emerald-400 font-medium">
               ماده ۱۲ برنامه عمل جامع ارتقای فرهنگ محیط‌زیست
             </span>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+        <div className="max-w-7xl mx-auto mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 gap-3">
           <span>
             طراحی و پیاده‌سازی مبتنی بر استانداردهای کارگروه استانی • کلیه داده‌ها در حافظه محلی (LocalStorage) ذخیره و پردازش می‌شوند.
           </span>

@@ -49,57 +49,57 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
     <div className="space-y-10 animate-fade-in pb-16">
       {/* Top Hero Section */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-black shadow-xs">
           <Trophy className="w-4 h-4 text-amber-500" />
           <span>ارزیابی دوره‌ای عملکرد دستگاه‌های اجرایی استان زنجان</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
           جدول رده‌بندی ادارات و اعطای نشان‌های افتخار
         </h1>
-        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
           بر اساس شاخص‌های برنامه عمل مصوب شورای فرهنگ عمومی، دستگاه‌هایی که بیشترین اثربخشی را در آموزش و صیانت از منابع طبیعی استان زنجان داشته‌اند مفتخر به دریافت لوح سپاس استانی می‌شوند.
         </p>
       </div>
 
       {/* Incentives & Perks Banner */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100 shadow-sm flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100 dark:border-slate-800 shadow-sm flex items-start gap-4 transition-colors">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <Coins className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900 mb-1">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 mb-1">
               اولویت اعتبارات فرهنگی
             </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               تخصیص سهم مضاعف از بودجه‌های فصل فرهنگ و آموزش استانی به دستگاه‌های حائز رتبه‌های اول تا سوم.
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100 shadow-sm flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100 dark:border-slate-800 shadow-sm flex items-start gap-4 transition-colors">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
             <Tv className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900 mb-1">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 mb-1">
               معرفی در شبکه استانی اشراق
             </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               تولید مستندهای کوتاه و برنامه‌های زنده صدا و سیمای زنجان برای تجلیل از اقدامات شاخص ادارات برگزیده.
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 border border-emerald-100 shadow-sm flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-emerald-100 dark:border-slate-800 shadow-sm flex items-start gap-4 transition-colors">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-slate-900 mb-1">
+            <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 mb-1">
               امتیاز جشنواره شهید رجایی
             </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               ثبت حداکثر امتیاز شاخص‌های محیط‌زیستی در فرم‌های ارزیابی عملکرد سالانه مدیران دستگاه‌های اجرایی.
             </p>
           </div>
@@ -107,15 +107,15 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
       </div>
 
       {/* Main Leaderboard Table */}
-      <div className="bg-white rounded-3xl border border-emerald-100 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors">
         {/* Table Controls */}
-        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-amber-500" />
               <span>جدول رتبه‌بندی ادارات کل و فرمانداری‌ها</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
               محاسبه زنده بر اساس ساعت‌های آموزشی تایید شده، سنجش اثربخشی و نمرات کارگروه داوری
             </p>
           </div>
@@ -125,10 +125,10 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
               <select
                 value={selectedSeason}
                 onChange={(e) => setSelectedSeason(e.target.value)}
-                className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold py-2 pr-4 pl-9 rounded-xl outline-none focus:border-emerald-500 cursor-pointer"
+                className="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold py-2 pr-4 pl-9 rounded-xl outline-none focus:border-emerald-500 cursor-pointer"
               >
-                <option value="spring1405">دوره ارزیابی بهار ۱۴۰۵ (دوره جاری)</option>
-                <option value="winter1404">کارنامه عملکرد سال ۱۴۰۴</option>
+                <option value="spring1405" className="dark:bg-slate-800">دوره ارزیابی بهار ۱۴۰۵ (دوره جاری)</option>
+                <option value="winter1404" className="dark:bg-slate-800">کارنامه عملکرد سال ۱۴۰۴</option>
               </select>
               <ChevronDown className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
             </div>
@@ -138,7 +138,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
         {/* Responsive Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-right text-xs">
-            <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+            <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-100 dark:border-slate-800">
               <tr>
                 <th className="py-3 px-5 text-center w-16">رتبه</th>
                 <th className="py-3 px-4">دستگاه اجرایی / اداره کل</th>
@@ -149,7 +149,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
                 <th className="py-3 px-5 text-center">امتیاز نهایی</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
               {sortedAgencies.map((agency, index) => {
                 const rankNum = index + 1;
                 const isCurrent = agency._id === activeAgency._id;
@@ -159,8 +159,8 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
                     key={agency._id}
                     className={`transition-colors ${
                       isCurrent
-                        ? 'bg-emerald-50/70 font-semibold'
-                        : 'hover:bg-slate-50/80'
+                        ? 'bg-emerald-50/70 dark:bg-emerald-950/40 font-semibold'
+                        : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50'
                     }`}
                   >
                     <td className="py-4 px-5 text-center">
@@ -169,7 +169,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
                           ۱
                         </div>
                       ) : rankNum === 2 ? (
-                        <div className="w-8 h-8 rounded-full bg-slate-300 text-slate-700 font-black flex items-center justify-center mx-auto shadow-sm">
+                        <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-100 font-black flex items-center justify-center mx-auto shadow-sm">
                           ۲
                         </div>
                       ) : rankNum === 3 ? (
@@ -177,7 +177,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
                           ۳
                         </div>
                       ) : (
-                        <span className="font-bold text-slate-500 text-sm">
+                        <span className="font-bold text-slate-500 dark:text-slate-400 text-sm">
                           {rankNum}
                         </span>
                       )}
@@ -185,7 +185,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
 
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-black text-slate-900 text-sm">
+                        <span className="font-black text-slate-900 dark:text-slate-100 text-sm">
                           {agency.name}
                         </span>
                         {isCurrent && (
@@ -194,28 +194,28 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
                           </span>
                         )}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
                         رابط: {agency.liaisonOfficer.fullName}
                       </div>
                     </td>
 
                     <td className="py-4 px-4">
-                      <div className="font-medium text-slate-800">
+                      <div className="font-medium text-slate-800 dark:text-slate-200">
                         {agency.countyFa}
                       </div>
-                      <div className="text-[10px] text-slate-400">
+                      <div className="text-[10px] text-slate-400 dark:text-slate-400">
                         {agency.category}
                       </div>
                     </td>
 
-                    <td className="py-4 px-4 font-bold text-slate-800 text-sm">
+                    <td className="py-4 px-4 font-bold text-slate-800 dark:text-slate-200 text-sm">
                       {agency.totalHours}{' '}
                       <span className="text-xs text-slate-400 font-normal">
                         ساعت
                       </span>
                     </td>
 
-                    <td className="py-4 px-4 font-bold text-slate-800 text-sm">
+                    <td className="py-4 px-4 font-bold text-slate-800 dark:text-slate-200 text-sm">
                       {agency.totalAudience.toLocaleString('fa-IR')}{' '}
                       <span className="text-xs text-slate-400 font-normal">
                         نفر
@@ -224,7 +224,7 @@ export const GovernmentalLeaderboardAndAwards: React.FC<GovernmentalLeaderboardA
 
                     <td className="py-4 px-4">
                       {agency.awardBadge ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[11px] font-bold">
                           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                           <span>{agency.awardBadge}</span>
                         </span>

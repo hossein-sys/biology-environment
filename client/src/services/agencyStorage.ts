@@ -306,10 +306,14 @@ const STORAGE_KEYS = {
   CERTIFICATES: 'zanjan_gov_certs_v2',
   ROLE: 'zanjan_gov_role_v2',
   ACTIVE_AGENCY_ID: 'zanjan_gov_active_agency_v2',
+  THEME: 'zanjan_gov_theme',
 };
 
 export const agencyStorageService = {
   init() {
+    if (!localStorage.getItem(STORAGE_KEYS.THEME)) {
+      localStorage.setItem(STORAGE_KEYS.THEME, 'light');
+    }
     if (!localStorage.getItem(STORAGE_KEYS.AGENCIES)) {
       localStorage.setItem(STORAGE_KEYS.AGENCIES, JSON.stringify(INITIAL_AGENCIES));
     }
@@ -569,5 +573,14 @@ export const agencyStorageService = {
 
   setCurrentRole(role: 'agency_rep' | 'provincial_evaluator') {
     localStorage.setItem(STORAGE_KEYS.ROLE, role);
+  },
+
+  getTheme(): 'light' | 'dark' {
+    this.init();
+    return (localStorage.getItem(STORAGE_KEYS.THEME) as 'light' | 'dark') || 'light';
+  },
+
+  setTheme(theme: 'light' | 'dark') {
+    localStorage.setItem(STORAGE_KEYS.THEME, theme);
   },
 };

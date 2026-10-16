@@ -141,12 +141,12 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Queue List (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white rounded-3xl border border-emerald-100 p-4 shadow-sm space-y-3">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-100 dark:border-slate-800 p-4 shadow-sm space-y-3 transition-colors">
             <div className="flex items-center justify-between">
-              <h3 className="font-black text-sm text-slate-800">
+              <h3 className="font-black text-sm text-slate-800 dark:text-slate-100">
                 صف پرونده‌های داوری
               </h3>
-              <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+              <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-bold">
                 {filteredEvents.length} مورد
               </span>
             </div>
@@ -158,7 +158,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                 className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
                   filterStatus === 'pending'
                     ? 'bg-amber-500 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 در انتظار ({pendingCount})
@@ -168,7 +168,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                 className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
                   filterStatus === 'approved'
                     ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 تایید شده ({approvedCount})
@@ -177,8 +177,8 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                 onClick={() => setFilterStatus('all')}
                 className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
                   filterStatus === 'all'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 همه ({events.length})
@@ -193,7 +193,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                 placeholder="جستجو بر اساس دستگاه، عنوان یا شهرستان..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pr-9 pl-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 outline-none focus:border-emerald-500"
+                className="w-full pr-9 pl-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500"
               />
             </div>
           </div>
@@ -201,7 +201,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
           {/* Cards List */}
           <div className="space-y-2.5 max-h-[600px] overflow-y-auto">
             {filteredEvents.length === 0 ? (
-              <div className="bg-white rounded-3xl border border-slate-200 p-8 text-center text-xs text-slate-400">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 text-center text-xs text-slate-400">
                 موردی در این دسته وجود ندارد.
               </div>
             ) : (
@@ -213,37 +213,37 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                     onClick={() => setSelectedEventId(event._id)}
                     className={`p-4 rounded-3xl border cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-emerald-50/70 border-emerald-500 shadow-sm'
-                        : 'bg-white border-slate-200/80 hover:border-emerald-200 hover:bg-slate-50'
+                        ? 'bg-emerald-50/70 dark:bg-emerald-950/60 border-emerald-500 shadow-sm'
+                        : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <span className="font-bold text-xs text-slate-900 leading-snug line-clamp-2">
+                      <span className="font-bold text-xs text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">
                         {event.title}
                       </span>
                       {event.status === 'approved' ? (
-                        <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full shrink-0">
                           تایید شده
                         </span>
                       ) : event.status === 'pending' ? (
-                        <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-bold px-2 py-0.5 rounded-full shrink-0">
                           در انتظار
                         </span>
                       ) : (
-                        <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 font-bold px-2 py-0.5 rounded-full shrink-0">
                           نیازمند اصلاح
                         </span>
                       )}
                     </div>
 
-                    <div className="text-[11px] text-slate-500 flex items-center justify-between">
-                      <span className="font-medium text-emerald-800">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                      <span className="font-medium text-emerald-800 dark:text-emerald-400">
                         {event.agencyName}
                       </span>
-                      <span className="text-slate-400">{event.countyFa}</span>
+                      <span className="text-slate-400 dark:text-slate-400">{event.countyFa}</span>
                     </div>
 
-                    <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-400">
                       <span>مدرس: {event.instructorName}</span>
                       <span>{event.durationHours} ساعت / {event.attendeeCount} نفر</span>
                     </div>
@@ -257,19 +257,19 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
         {/* Detailed Evaluation Workspace (7 Cols) */}
         <div className="lg:col-span-7">
           {selectedEvent ? (
-            <div className="bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm space-y-6">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-100 dark:border-slate-800 p-6 shadow-sm space-y-6 transition-colors">
               {/* Event Title & Header */}
-              <div className="border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-2 text-xs text-emerald-700 font-bold mb-1">
+              <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-400 font-bold mb-1">
                   <Building2 className="w-4 h-4" />
                   <span>{selectedEvent.agencyName}</span>
                   <span>•</span>
                   <span>شهرستان {selectedEvent.countyFa}</span>
                 </div>
-                <h2 className="text-lg font-black text-slate-900 leading-snug">
+                <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 leading-snug">
                   {selectedEvent.title}
                 </h2>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-2 font-mono">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 dark:text-slate-400 mt-2 font-mono">
                   <span>تاریخ: {selectedEvent.eventDate}</span>
                   <span>•</span>
                   <span>مدت: {selectedEvent.durationHours} ساعت</span>
@@ -281,18 +281,18 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
               </div>
 
               {/* Instructor Credentials (Crucial for scoring) */}
-              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
-                  <GraduationCap className="w-4 h-4 text-emerald-600" />
+              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-xs text-slate-900 dark:text-slate-100">
+                  <GraduationCap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>مشخصات و سوابق علمی مدرس:</span>
                 </div>
-                <p className="font-bold text-xs text-emerald-950">
+                <p className="font-bold text-xs text-emerald-950 dark:text-emerald-300">
                   {selectedEvent.instructorName}
                 </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {selectedEvent.instructorResume}
                 </p>
-                <div className="pt-2 border-t border-slate-200/60 text-[11px] text-slate-500 flex justify-between">
+                <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 flex justify-between">
                   <span>مجری / سازمان‌دهنده: {selectedEvent.organizerName}</span>
                   <span>محل: {selectedEvent.location}</span>
                 </div>
@@ -300,28 +300,28 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
 
               {/* Description & Impact */}
               <div>
-                <h4 className="font-bold text-xs text-slate-800 mb-1">
+                <h4 className="font-bold text-xs text-slate-800 dark:text-slate-200 mb-1">
                   شرح اهداف، محتوا و اثربخشی اقدام:
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">
                   {selectedEvent.description}
                 </p>
               </div>
 
               {/* Evidence Files */}
               <div>
-                <h4 className="font-bold text-xs text-slate-800 mb-2">
+                <h4 className="font-bold text-xs text-slate-800 dark:text-slate-200 mb-2">
                   مدارک، صورتجلسات و تصاویر پیوست:
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {selectedEvent.evidenceFiles.map((file) => (
                     <div
                       key={file.id}
-                      className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs"
+                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center gap-2 truncate">
-                        <FileText className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span className="font-medium text-slate-800 truncate">
+                        <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
                           {file.name}
                         </span>
                       </div>
@@ -334,17 +334,17 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
               </div>
 
               {/* Reviewer Action Box */}
-              <form onSubmit={handleApprove} className="bg-emerald-50/60 rounded-3xl p-5 border border-emerald-200/80 space-y-4">
+              <form onSubmit={handleApprove} className="bg-emerald-50/60 dark:bg-emerald-950/40 rounded-3xl p-5 border border-emerald-200/80 dark:border-emerald-800/60 space-y-4">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-emerald-700" />
-                  <h4 className="font-black text-xs text-emerald-950">
+                  <Sparkles className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+                  <h4 className="font-black text-xs text-emerald-950 dark:text-emerald-200">
                     تصمیم‌گیری داور و ثبت امتیاز رسمی
                   </h4>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       امتیاز پیشنهادی کارگروه (از ۰ تا ۳۰):
                     </label>
                     <input
@@ -353,22 +353,22 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                       max={35}
                       value={pointsToAward}
                       onChange={(e) => setPointsToAward(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold text-emerald-800 outline-none focus:border-emerald-500 bg-white"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-emerald-800 dark:text-emerald-300 outline-none focus:border-emerald-500 bg-white dark:bg-slate-800"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       ارزیابی کیفی مدرس و مستندات:
                     </label>
-                    <div className="text-xs text-slate-600 py-2">
+                    <div className="text-xs text-slate-600 dark:text-slate-300 py-2">
                       {selectedEvent.effectivenessFa}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     توضیحات و ابلاغیه رسمی کارشناس داور:
                   </label>
                   <textarea
@@ -376,7 +376,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                     value={reviewerNotes}
                     onChange={(e) => setReviewerNotes(e.target.value)}
                     placeholder="علت تایید، نقاط قوت اقدام یا ایرادات مستندات که دستگاه باید رفع نماید..."
-                    className="w-full p-3 rounded-xl border border-slate-200 text-xs text-slate-800 outline-none focus:border-emerald-500 bg-white leading-relaxed"
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500 bg-white dark:bg-slate-800 leading-relaxed"
                   />
                 </div>
 
@@ -384,9 +384,9 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
                   <button
                     type="button"
                     onClick={handleReject}
-                    className="px-4 py-2.5 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-700 text-xs font-bold transition-colors flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-800 bg-white dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-400 text-xs font-bold transition-colors flex items-center gap-1.5"
                   >
-                    <XCircle className="w-4 h-4 text-rose-600" />
+                    <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                     <span>درخواست اصلاح مستندات / رد اقدام</span>
                   </button>
 
@@ -401,7 +401,7 @@ export const GovernmentalAdminReview: React.FC<GovernmentalAdminReviewProps> = (
               </form>
             </div>
           ) : (
-            <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center text-xs text-slate-400">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center text-xs text-slate-400">
               یک پرونده را از فهرست سمت راست انتخاب فرمایید.
             </div>
           )}

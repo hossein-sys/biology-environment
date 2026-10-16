@@ -5,8 +5,18 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    background-color: #020408;
-    color: #e2e8f0;
+  }
+
+  html.dark {
+    background-color: #030712;
+    color: #f8fafc;
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    background-color: #f8fafc;
+    color: #0f172a;
+    color-scheme: light;
   }
   
   body {
@@ -14,20 +24,32 @@
     overflow-x: hidden;
   }
 
-  /* Custom precision dark scrollbar */
+  /* Custom precision scrollbar */
   ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
   }
-  ::-webkit-scrollbar-track {
-    background: #03070d;
+  
+  html.dark ::-webkit-scrollbar-track {
+    background: #030712;
   }
-  ::-webkit-scrollbar-thumb {
-    background: #112238;
-    border-radius: 2px;
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #00f0ff;
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
   }
 }
 
