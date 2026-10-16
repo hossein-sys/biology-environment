@@ -483,6 +483,9 @@ export const ActivitySubmissionModal: React.FC<ActivitySubmissionModalProps> = (
                   : 'border-slate-700 hover:border-slate-500 bg-slate-800/40'
               }`}
             >
+              <>
+              hello
+              </>
               <input
                 type="file"
                 id="file-input"
