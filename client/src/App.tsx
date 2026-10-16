@@ -1,176 +1,206 @@
 import React, { useState, useEffect } from 'react';
-import { FloatingHeader } from './components/FloatingHeader';
-import { LandingPageView } from './components/LandingPageView';
-import { CompanyDashboardView } from './components/CompanyDashboardView';
-import { AdminAuditView } from './components/AdminAuditView';
-import { CertificateView } from './components/CertificateView';
-import { LeaderboardView } from './components/LeaderboardView';
-import { AuthModal } from './components/AuthModal';
-import { CertificateVoucherModal } from './components/CertificateVoucherModal';
-import { storageService } from './services/storage';
-import { Company, ActivityLog, DiscountIncentive } from './types';
-import { ShieldCheck, Heart, Leaf } from 'lucide-react';
+import { agencyStorageService } from './services/agencyStorage';
+import { Agency, CulturalEvent } from './types/governmentalAgency';
+import { GovernmentalHeader } from './components/GovernmentalHeader';
+import { GovernmentalLandingPage } from './components/GovernmentalLandingPage';
+import { GovernmentalDashboard } from './components/GovernmentalDashboard';
+import { GovernmentalLeaderboardAndAwards } from './components/GovernmentalLeaderboardAndAwards';
+import { GovernmentalAdminReview } from './components/GovernmentalAdminReview';
+import { GovernmentalAuthModal } from './components/GovernmentalAuthModal';
+import { GovernmentalEventModal } from './components/GovernmentalEventModal';
+import { ShieldCheck, MapPin, ExternalLink } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [currentRole, setCurrentRole] = useState<'company_rep' | 'inspector'>(
-    storageService.getCurrentRole()
-  );
-  const [activeView, setActiveView] = useState<'home' | 'dashboard' | 'rewards' | 'leaderboard' | 'admin'>('home');
-  const [companies, setCompanies] = useState<Company[]>(storageService.getCompanies());
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>(
-    storageService.getSelectedCompanyId()
-  );
-  const [logs, setLogs] = useState<ActivityLog[]>(storageService.getActivityLogs());
-  const [vouchers, setVouchers] = useState<DiscountIncentive[]>(storageService.getVouchers());
+  const [agencies, setAgencies] = useState<Agency[]>([]);
+  const [events, setEvents] = useState<CulturalEvent[]>([]);
+  const [selectedAgencyId, setSelectedAgencyId] = useState<string>('');
+  const [currentRole, setCurrentRole] = useState<'agency_rep' | 'provincial_evaluator'>('agency_rep');
+  const [activeView, setActiveView] = useState<'landing' | 'dashboard' | 'leaderboard' | 'admin'>('landing');
 
-  // Modals
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [selectedVoucherForModal, setSelectedVoucherForModal] =
-    useState<DiscountIncentive | null>(null);
+  // Modals state
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    refreshAllData();
-  }, []);
+  // Sync state from agencyStorageService
+  const refreshData = () => {
+    const loadedAgencies = agencyStorageService.getAgencies();
+    const loadedEvents = agencyStorageService.getEvents();
+    const storedAgencyId = agencyStorageService.getActiveAgencyId();
+    const storedRole = agencyStorageService.getCurrentRole();
 
-  const refreshAllData = () => {
-    const comps = storageService.getCompanies();
-    setCompanies(comps);
-    setLogs(storageService.getActivityLogs());
-    setVouchers(storageService.getVouchers());
+    setAgencies(loadedAgencies);
+    setEvents(loadedEvents);
+    setSelectedAgencyId(
+      loadedAgencies.some((a) => a._id === storedAgencyId)
+        ? storedAgencyId
+        : loadedAgencies[0]?._id || ''
+    );
+    setCurrentRole(storedRole);
   };
 
-  const handleRoleChange = (role: 'company_rep' | 'inspector') => {
+  useEffect(() => {
+    agencyStorageService.init();
+    refreshData();
+  }, []);
+
+  const activeAgency =
+    agencies.find((a) => a._id === selectedAgencyId) ||
+    agencies[0] || {
+      _id: 'agency-medu',
+      name: 'اداره کل آموزش و پرورش استان زنجان',
+      county: 'zanjan',
+      countyFa: 'زنجان',
+      category: 'آموزشی و فرهنگی',
+      liaisonOfficer: {
+        fullName: 'دکتر علیرضا رحمانی',
+        phone: '۰۹۱۲۱۴۱۸۸۷۷',
+        title: 'رابط محیط‌زیست',
+      },
+      totalScore: 94,
+      totalHours: 124,
+      totalAudience: 1850,
+      rank: 1,
+    };
+
+  const handleRoleChange = (role: 'agency_rep' | 'provincial_evaluator') => {
     setCurrentRole(role);
-    storageService.setCurrentRole(role);
-    if (role === 'inspector') {
+    agencyStorageService.setCurrentRole(role);
+    if (role === 'provincial_evaluator' && activeView === 'dashboard') {
       setActiveView('admin');
-    } else {
+    } else if (role === 'agency_rep' && activeView === 'admin') {
       setActiveView('dashboard');
     }
   };
 
-  const handleCompanyChange = (id: string) => {
-    setSelectedCompanyId(id);
-    storageService.setSelectedCompanyId(id);
+  const handleAgencyChange = (agencyId: string) => {
+    setSelectedAgencyId(agencyId);
+    agencyStorageService.setActiveAgencyId(agencyId);
   };
 
-  const activeCompany =
-    companies.find((c) => c._id === selectedCompanyId) || companies[0];
+  const handleResetData = () => {
+    if (window.confirm('آیا از بازنشانی داده‌های تستی لوکال به وضعیت اولیه اطمینان دارید؟')) {
+      agencyStorageService.resetData();
+      refreshData();
+    }
+  };
 
-  const activeCompanyLogs = logs.filter(
-    (l) => l.companyId._id === activeCompany?._id
-  );
-  const activeCompanyVouchers = vouchers.filter(
-    (v) => v.companyId._id === activeCompany?._id
-  );
+  const stats = agencyStorageService.getProvinceStats();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-vazir selection:bg-emerald-500 selection:text-white" dir="rtl">
-      {/* Floating Glassmorphism Header */}
-      <FloatingHeader
+    <div
+      dir="rtl"
+      className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-vazirmatn antialiased selection:bg-emerald-200 selection:text-emerald-900"
+    >
+      {/* Floating Glassmorphic Header */}
+      <GovernmentalHeader
         currentRole={currentRole}
         onRoleChange={handleRoleChange}
         activeView={activeView}
         onViewChange={setActiveView}
-        companies={companies}
-        selectedCompanyId={selectedCompanyId}
-        onCompanyChange={handleCompanyChange}
+        agencies={agencies}
+        selectedAgencyId={selectedAgencyId}
+        onAgencyChange={handleAgencyChange}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onResetData={handleResetData}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        {activeView === 'home' && (
-          <LandingPageView
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        {activeView === 'landing' && (
+          <GovernmentalLandingPage
             onOpenAuth={() => setIsAuthModalOpen(true)}
             onNavigateToDashboard={() => setActiveView('dashboard')}
             onNavigateToLeaderboard={() => setActiveView('leaderboard')}
-            onNavigateToRewards={() => setActiveView('rewards')}
-            topCompanies={companies}
+            topAgencies={agencies}
+            stats={stats}
           />
         )}
 
-        {activeView === 'dashboard' && activeCompany && (
-          <CompanyDashboardView
-            company={activeCompany}
-            logs={activeCompanyLogs}
-            vouchers={activeCompanyVouchers}
-            onOpenCertificateModal={(v) => setSelectedVoucherForModal(v)}
-            onRefreshData={refreshAllData}
-            onNavigateToRewards={() => setActiveView('rewards')}
-          />
-        )}
-
-        {activeView === 'admin' && (
-          <AdminAuditView
-            companies={companies}
-            logs={logs}
-            onRefreshData={refreshAllData}
-            onOpenCertificateModal={(v) => setSelectedVoucherForModal(v)}
-          />
-        )}
-
-        {activeView === 'rewards' && (
-          <CertificateView
-            vouchers={vouchers}
-            companies={companies}
-            selectedCompanyId={selectedCompanyId}
+        {activeView === 'dashboard' && (
+          <GovernmentalDashboard
+            agency={activeAgency}
+            events={events}
+            onOpenNewEventModal={() => setIsEventModalOpen(true)}
+            onNavigateToLeaderboard={() => setActiveView('leaderboard')}
           />
         )}
 
         {activeView === 'leaderboard' && (
-          <LeaderboardView
-            companies={companies}
-            onSelectCompany={(c) => {
-              handleCompanyChange(c._id);
-              setActiveView('dashboard');
-            }}
+          <GovernmentalLeaderboardAndAwards
+            agencies={agencies}
+            activeAgency={activeAgency}
+            onRefreshData={refreshData}
+          />
+        )}
+
+        {activeView === 'admin' && (
+          <GovernmentalAdminReview
+            events={events}
+            agencies={agencies}
+            onRefreshData={refreshData}
           />
         )}
       </main>
 
-      {/* Footer (Hidden in Print) */}
-      <footer className="no-print mt-auto border-t border-emerald-100 bg-white py-8 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+      {/* Official Footer */}
+      <footer className="no-print mt-auto border-t border-slate-200/80 bg-white py-10 px-4 sm:px-6 lg:px-8 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <Leaf className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-bold text-slate-800">
-                سامانه پایش عملکرد و صنعت سبز استان زنجان
+              <p className="font-bold text-slate-800 text-sm">
+                سامانه پایش عملکرد و ارتقای فرهنگ محیط‌زیست ادارات استان زنجان
               </p>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                دبیرخانه شورای فرهنگ عمومی استان • کارگروه ارتقای فرهنگ حفاظت محیط‌زیست
+                دبیرخانه شورای فرهنگ عمومی استان • اداره کل حفاظت محیط‌زیست زنجان
               </p>
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-400 max-w-md">
-            اجرای ماده ۲۷ قانون مالیات بر ارزش افزوده و شیوه نامه استانی پایش فلزات سنگین سرب و روی، رودخانه قزل‌اوزن و دپوهای باطله
+          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-500 text-xs">
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+              <span>پوشش شهرستان‌های هشت‌گانه استان زنجان</span>
+            </span>
+            <span>•</span>
+            <span className="text-emerald-700 font-medium">
+              ماده ۱۲ برنامه عمل جامع ارتقای فرهنگ محیط‌زیست
+            </span>
           </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+          <span>
+            طراحی و پیاده‌سازی مبتنی بر استانداردهای کارگروه استانی • کلیه داده‌ها در حافظه محلی (LocalStorage) ذخیره و پردازش می‌شوند.
+          </span>
+          <span className="font-mono">نسخه ۱.۰.۰ • ۱۴۰۵</span>
         </div>
       </footer>
 
-      {/* Onboarding & Registration Modal */}
-      <AuthModal
+      {/* Auth / Onboarding Modal */}
+      <GovernmentalAuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onCompanyCreatedOrSelected={(comp) => {
-          refreshAllData();
-          handleCompanyChange(comp._id);
+        onSuccess={(agency) => {
+          refreshData();
+          setSelectedAgencyId(agency._id);
           setActiveView('dashboard');
         }}
-        onSelectRole={handleRoleChange}
       />
 
-      {/* Print Certificate Modal */}
-      {selectedVoucherForModal && (
-        <CertificateVoucherModal
-          voucher={selectedVoucherForModal}
-          onClose={() => setSelectedVoucherForModal(null)}
-        />
-      )}
+      {/* Multi-step Event Submission Modal */}
+      <GovernmentalEventModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        activeAgency={activeAgency}
+        onEventCreated={() => {
+          refreshData();
+        }}
+      />
     </div>
   );
 };
+
+export default App;

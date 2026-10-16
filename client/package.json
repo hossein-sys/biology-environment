@@ -1,6 +1,7 @@
 {
-  "name": "zanjan-green-portal-client",
+  "name": "abyssal-bioluminescence-showcase-client",
   "version": "1.0.0",
+  "description": "Awwwards Site of the Day candidate: Hadal trench bioluminescence deep-sea showcase",
   "type": "module",
   "scripts": {
     "dev": "vite",

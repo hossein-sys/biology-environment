@@ -1,6 +1,7 @@
 {
-  "name": "zanjan-green-portal-root",
+  "name": "abyssal-bioluminescence-showcase",
   "version": "1.0.0",
+  "description": "An immersive, cinematic showcase web application documenting hadal deep-sea bioluminescence.",
   "private": true,
   "scripts": {
     "dev": "npm --prefix client run dev",
